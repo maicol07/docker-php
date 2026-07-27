@@ -1,14 +1,8 @@
 php_variations:
-  - name: cli
-    default: true
-  - name: fpm
-  - name: fpm-apache
-    supported_os: # Open a discussion on serversideup/php if you want to see Alpine support for fpm-apache (https://github.com/serversideup/docker-php/discussions/66)
-      - bullseye
-      - bookworm
-      - trixie
-  - name: fpm-nginx
   - name: frankenphp
+    default: true
+    supported_os:
+      - alpine
     excluded_minor_versions:
       - "7.4"
       - "8.0"
@@ -21,7 +15,6 @@ php_versions:
       - minor: "7.4"
         base_os:
           - name: alpine3.16
-          - name: bullseye
         patch_versions:
           - 7.4.33
   - major: "8"
@@ -29,52 +22,42 @@ php_versions:
       - minor: "8.0"
         base_os:
           - name: alpine3.16
-          - name: bullseye
         patch_versions:
           - 8.0.30
       - minor: "8.1"
         base_os:
           - name: alpine3.21
           - name: alpine3.22
-          - name: bookworm
-          - name: trixie
         patch_versions:
           # - 8.1.34 # Pull latest from Official PHP source
       - minor: "8.2"
         base_os:
           - name: alpine3.23
           - name: alpine3.24
-          - name: bookworm
-          - name: trixie
         patch_versions:
         #   - 8.2.32 # Pull latest from Official PHP source
       - minor: "8.3"
         base_os:
           - name: alpine3.23
           - name: alpine3.24
-          - name: bookworm
-          - name: trixie
         patch_versions:
           # - 8.3.32 # Pull latest from Official PHP source
       - minor: "8.4"
         base_os:
           - name: alpine3.23
           - name: alpine3.24
-          - name: bookworm
-          - name: trixie
         patch_versions:
         #   - 8.4.23 # Pull latest from Official PHP source
       - minor: "8.5"
         base_os:
           - name: alpine3.23
           - name: alpine3.24
-          - name: bookworm
-          - name: trixie
         patch_versions:
         #   - 8.5.8 # Pull latest from Official PHP source
 
 operating_systems:
   - family: alpine
+    default: true
     versions:
       - name: "Alpine 3.16"
         version: alpine3.16
@@ -112,18 +95,4 @@ operating_systems:
         version: alpine3.24
         number: 3.24
         nginx_version: 1.30.3-r1
-  - family: debian
-    default: true
-    versions:
-      - name: "Debian Bullseye"
-        version: bullseye
-        number: 11
-        nginx_version: 1.30.1-1~bullseye
-      - name: "Debian Bookworm"
-        version: bookworm
-        number: 12
-        nginx_version: 1.30.1-1~bookworm
-      - name: "Debian Trixie"
-        version: trixie
-        number: 13
-        nginx_version: 1.30.1-1~trixie
+
