@@ -16,7 +16,17 @@ jobs:
       - name: Get Latest Beta Release
         id: get_latest_beta
         run: |
-          LATEST_BETA=$(curl -s https://api.github.com/repos/${{ github.repository }}/releases | jq -r '[.[] | select(.prerelease == true)][0].tag_name')
+          if [ "${{ github.event_name }}" = "release" ]; then
+            LATEST_BETA="${{ github.event.release.tag_name }}"
+          else
+            LATEST_BETA=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/releases" | jq -r '[.[]? | select(.prerelease == true)][0].tag_name // empty')
+          fi
+
+          if [ -z "$LATEST_BETA" ] || [ "$LATEST_BETA" = "null" ]; then
+            echo "No beta release tag found, falling back to ref ${{ github.ref }}"
+            LATEST_BETA="${{ github.ref }}"
+          fi
+
           echo "release_tag=${LATEST_BETA}" >> $GITHUB_OUTPUT
 
   build-beta-images:

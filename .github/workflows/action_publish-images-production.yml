@@ -16,7 +16,17 @@ jobs:
       - name: Get Latest Release
         id: get_latest_release
         run: |
-          LATEST_TAG=$(curl -s https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r .tag_name)
+          if [ "${{ github.event_name }}" = "release" ]; then
+            LATEST_TAG="${{ github.event.release.tag_name }}"
+          else
+            LATEST_TAG=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/releases/latest" | jq -r '.tag_name // empty')
+          fi
+
+          if [ -z "$LATEST_TAG" ] || [ "$LATEST_TAG" = "null" ]; then
+            echo "No release tag found, falling back to ref ${{ github.ref }}"
+            LATEST_TAG="${{ github.ref }}"
+          fi
+
           echo "release_tag=${LATEST_TAG}" >> $GITHUB_OUTPUT
 
   build-production-images:
