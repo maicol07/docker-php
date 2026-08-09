@@ -82,17 +82,16 @@ operating_systems:
       - name: "Alpine 3.21"
         version: alpine3.21
         number: 3.21
-        nginx_version: 1.30.1-r1
+        nginx_version: 1.30.4-r1
       - name: "Alpine 3.22"
         version: alpine3.22
         number: 3.22
-        nginx_version: 1.30.1-r1
+        nginx_version: 1.30.4-r1
       - name: "Alpine 3.23"
         version: alpine3.23
         number: 3.23
-        nginx_version: 1.30.1-r1
+        nginx_version: 1.30.4-r1
       - name: "Alpine 3.24"
         version: alpine3.24
         number: 3.24
-        nginx_version: 1.30.3-r1
-
+        nginx_version: 1.30.4-r1
