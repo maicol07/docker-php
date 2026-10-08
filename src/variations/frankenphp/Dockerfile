@@ -67,13 +67,13 @@ RUN docker-php-serversideup-dep-install-alpine "$PHPIZE_DEPS ${BUILD_DEPENDENCY_
 
 # Install e-dant/watcher (necessary for file watching)
 WORKDIR /usr/local/src/watcher
-RUN curl -s https://api.github.com/repos/e-dant/watcher/releases/latest | \
-    grep tarball_url | \
-    awk '{ print $2 }' | \
-    sed 's/,$//' | \
-    sed 's/"//g' | \
-    xargs curl -L | \
-    tar xz --strip-components 1 && \
+RUN curl -fsSL --retry 3 --retry-max-time 60 --connect-timeout 10 --max-time 60 \
+        https://api.github.com/repos/e-dant/watcher/releases/latest -o /tmp/watcher-release.json && \
+    WATCHER_URL=$(php -r '$release = json_decode(file_get_contents("/tmp/watcher-release.json"), true, 512, JSON_THROW_ON_ERROR); $url = $release["tarball_url"] ?? null; if (!is_string($url) || !filter_var($url, FILTER_VALIDATE_URL) || parse_url($url, PHP_URL_SCHEME) !== "https") { throw new UnexpectedValueException("Invalid watcher release tarball_url"); } echo $url;') && \
+    curl -fsSL --retry 3 --retry-max-time 60 --connect-timeout 10 --max-time 60 \
+        "$WATCHER_URL" -o /tmp/watcher.tar.gz && \
+    tar xzf /tmp/watcher.tar.gz --strip-components 1 && \
+    rm /tmp/watcher-release.json /tmp/watcher.tar.gz && \
     cmake -S . -B build -DCMAKE_BUILD_TYPE=Release && \
     cmake --build build && \
     cmake --install build && \
